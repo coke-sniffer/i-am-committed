@@ -1,8 +1,3 @@
-import org.eclipse.jgit.api.CommitCommand;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.lib.Repository;
-
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,7 +10,7 @@ import static java.lang.System.currentTimeMillis;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException, GitAPIException, InterruptedException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         Scanner s = new Scanner(System.in);
         System.out.println("how many times (infinite rn)");
@@ -28,19 +23,29 @@ public class Main {
 
         //prr = rt.exec("git commit --allow-empty -m \"i am speed\"");
 
-        long startt = System.currentTimeMillis();
-
         ThreadPoolExecutor executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(t);
-        for (int j = 0; j <= t; j++) {
+        for (int j = 1; j <= t; j++) {
             executor.submit(() -> {
+                int count = 0;
+                long t1 = System.currentTimeMillis();
                 for (;;) {
                     try {
                         gitCommit(path, "i am speed");
+                        /*count++;
+                        if(count%1000==0){
+                            long deltat = System.currentTimeMillis()-t1;
+                            System.out.println("Thread commited 1000 times in " + deltat);
+                            t1 = System.currentTimeMillis();
+                            count=0;
+                        }
+
+                         */
                     } catch (Exception e) {
                         System.out.println(e.getStackTrace());
                     }
                 }
             });
+            System.out.println("THREAD #"+j+" STARTED");
             Thread.sleep(200);
         }
 
@@ -60,16 +65,22 @@ public class Main {
                 .command(command)
                 .directory(directory.toFile());
         Process p = pb.start();
+        int exit = p.waitFor();
+
+        /*
         StreamGobbler errorGobbler = new StreamGobbler(p.getErrorStream(), "ERROR");
         StreamGobbler outputGobbler = new StreamGobbler(p.getInputStream(), "OUTPUT");
         outputGobbler.start();
         errorGobbler.start();
-        int exit = p.waitFor();
         errorGobbler.join();
         outputGobbler.join();
         if (exit != 0) {
             throw new Error(String.format("runCommand returned %d", exit));
         }
+
+         */
+
+
 
 
     }
